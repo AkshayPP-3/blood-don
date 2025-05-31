@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <title>Community Blood Donation</title>
+</head>
+
+<body>
+  <canvas id="particle-canvas"></canvas>
+
+  <header>
+    <h1>Community Blood Donation</h1>
+    <p>Connect Hospitals, NGOs, and Donors in Real Time</p>
+  </header>
+
+  <nav class="animated-nav">
+    <div class="nav-left">
+      <a href="#" onclick="navigate('landing')">Home</a>
+      <a href="#" onclick="navigate('donor')">Donor Dashboard</a>
+      <a href="#" onclick="navigate('hospital')">Hospital Dashboard</a>
+      <a href="#" onclick="navigate('map')">Map View</a>
+    </div>
+    <div class="nav-right">
+      <a href="#" onclick="navigate('login')">Login</a>
+      <a href="#" onclick="navigate('register')">Register</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <section id="landing" class="card">
+      <h2>Welcome to Community Blood Donation</h2>
+      <p>
+        Whether you're a hospital in need or a donor willing to help, register today and start saving lives.
+      </p>
+      <p>
+        Our platform bridges the gap between donors and hospitals, ensuring timely and efficient blood donations.
+      </p>
+      <p>
+        Join our community and be a part of a life-saving mission that makes a real difference.
+      </p>
+      <svg class="icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+             2 6 4 4 6.5 4c1.54 0 3.04.99 3.57 2.36h1.87
+             C14.46 4.99 15.96 4 17.5 4 20 4 22 6 22 8.5
+             c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      </svg>
+      <br>
+      <br>
+
+    </section>
+    <section id="about" class="card about-section">
+      <div class="about-content">
+        <h2>About Our Mission</h2>
+        <p>
+          At Community Blood Donation, our mission is to bridge the gap between donors and hospitals, ensuring timely
+          and efficient blood donations. We strive to create a seamless platform that fosters connections and saves
+          lives.
+        </p>
+        <p>
+          Join our community and be a part of a life-saving mission that makes a real difference.
+        </p>
+      </div>
+
+      <div class="about-image">
+        <img src="images/about-us.jpg" alt="About Us">
+      </div>
+    </section>
+
+    <section>
+      <h2> Shoutout</h2>
+      <div class="shoutoutbar">
+        <div class="shoutoutname1">
+          <div class="bo1">
+            <div class="bod1">
+              bloodGroup
+            </div>
+            Date
+          </div>
+          Suhas
+        </div>
+        <div class="shoutoutname2">
+          <div class="bo2">
+            <div class="bod2">
+              bloodGroup
+            </div>
+            Date
+          </div>Akshay
+        </div>
+        <div class="shoutoutname3">
+          <div class="bo3">
+            <div class="bod3">
+              bloodGroup
+            </div>
+            Date
+          </div>Akash
+        </div>
+        <div class="shoutoutname4">
+          <div class="bo4">
+            <div class="bod4">
+              bloodGroup
+            </div>
+            Date
+          </div>Name4
+        </div>
+      </div>
+    </section>
+    <section id="donor" class="card hidden" aria-label="Donor Dashboard">
+      <h2>Donor Registration</h2>
+      <form id="donorForm" onsubmit="return handleDonorSubmit(event)">
+        <label for="donorName">Full Name</label>
+        <input type="text" id="donorName" name="donorName" required />
+
+        <label for="donorEmail">Email</label>
+        <input type="email" id="donorEmail" name="donorEmail" required />
+
+        <label for="donorPhone">Phone Number</label>
+        <input type="tel" id="donorPhone" name="donorPhone" pattern="[0-9]{10}" required />
+
+        <label for="bloodGroup">Blood Group</label>
+        <select id="bloodGroup" name="bloodGroup" required>
+          <option value="">Select</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+
+        <label for="location">Location (City)</label>
+        <input type="text" id="location" name="location" required />
+
+        <button type="submit">Register as Donor</button>
+      </form>
+      <div id="donorMessage" role="alert"></div>
+    </section>
+
+    <section id="hospital" class="card hidden" aria-label="Hospital Dashboard">
+      <h2>Hospital Request Form</h2>
+      <form id="hospitalForm" onsubmit="return handleHospitalSubmit(event)">
+        <label for="hospitalName">Hospital Name</label>
+        <input type="text" id="hospitalName" name="hospitalName" required />
+
+        <label for="contactPerson">Contact Person</label>
+        <input type="text" id="contactPerson" name="contactPerson" required />
+
+        <label for="hospitalPhone">Phone Number</label>
+        <input type="tel" id="hospitalPhone" name="hospitalPhone" pattern="[0-9]{10}" required />
+
+        <label for="requiredBloodGroup">Required Blood Group</label>
+        <select id="requiredBloodGroup" name="requiredBloodGroup" required>
+          <option value="">Select</option>
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+
+        <label for="unitsNeeded">Units Needed</label>
+        <input type="number" id="unitsNeeded" name="unitsNeeded" min="1" required />
+
+        <label for="hospitalLocation">Location (City)</label>
+        <input type="text" id="hospitalLocation" name="hospitalLocation" required />
+
+        <button type="submit">Request Blood</button>
+      </form>
+      <div id="hospitalMessage" role="alert"></div>
+    </section>
+
+    <section id="map" class="card hidden" aria-label="Map View">
+      <h2>Nearby Blood Donation Centers</h2>
+      <div id="leafletMap" style="height: 500px; width: 100%;" aria-live="polite" aria-atomic="true"
+        aria-label="Map of donation centers">
+        <!-- Leaflet map will appear here -->
+      </div>
+    </section>
+
+    <section id="login" class="card hidden" aria-label="Login">
+      <h2>User Login</h2>
+      <form id="loginForm" onsubmit="return handleLogin(event)">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" name="loginEmail" required />
+
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" name="loginPassword" required />
+
+        <button type="submit">Login</button>
+      </form>
+      <div id="loginMessage" role="alert"></div>
+    </section>
+
+    <section id="register" class="card hidden" aria-label="Register">
+      <h2>Create an Account</h2>
+      <form id="registerForm" onsubmit="return handleRegister(event)">
+        <label for="regName">Full Name</label>
+        <input type="text" id="regName" name="regName" required />
+
+        <label for="regEmail">Email</label>
+        <input type="email" id="regEmail" name="regEmail" required />
+
+        <label for="regPassword">Password</label>
+        <input type="password" id="regPassword" name="regPassword" required minlength="6" />
+
+        <button type="submit">Register</button>
+      </form>
+      <div id="registerMessage" role="alert"></div>
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2025 Community Blood Donation. All rights reserved.
+  </footer>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="javascript.js"></script>
+</body>
+
+</html>
