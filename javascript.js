@@ -86,6 +86,170 @@ function handleLogin(event) {
   event.target.reset();
   return false;
 }
+//learn more 
+function showBlankPage(event) {
+  event.preventDefault();  // prevent default link jump
+
+  // Replace entire page content with your blood donation info
+  document.documentElement.innerHTML = `
+    <head>
+      <title>Blood Donation Process</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          max-width: 700px;
+          margin: 20px auto;
+          padding: 0 10px;
+          background: #f9f9f9;
+        }
+        .main1{
+        display:flex;
+        flex-direction:row;
+        justify-content:space-around;
+        gap: 126px;
+        }
+        .main2{
+        display:flex;
+        flex-direction:row;
+        justify-content:space-around;
+        gap: 127px;
+        }
+        .main3{
+        display:flex;
+        flex-direction:row;
+        justify-content:space-around;
+        gap: 128px;
+        }
+        img{
+        height:100px;
+        width:100px;
+        }
+        h2 {
+          text-align: center;
+          color: #d32f2f;
+          margin-bottom: 10px;
+        }
+        p.description {
+          margin-bottom: 30px;
+          font-size: 1.1em;
+          color: #555;
+        }
+        .step-card {
+          width: 100px;  
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 20px 30px;
+          margin-bottom: 15px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+          background-color: #fff;
+        }
+        .step-number {
+          font-weight: bold;
+          font-size: 1.3em;
+          color: #d32f2f;
+        }
+        .step-title {
+          font-weight: bold;
+          font-size: 1.1em;
+          margin-top: 5px;
+        }
+        .step-icon {
+          font-style: italic;
+          color: #777;
+          margin-top: 4px;
+        }
+      </style>
+    </head>
+    <body>
+      <h2>Blood Donation Process</h2>
+      <p class="description">
+        Find out what to do after you have scheduled your appointment, and learn about every step in our simple blood donation process. Also, download and print your blood donation preparation guide.
+      </p>
+      <div class="main">
+    <div class="main1">
+      <div class="step-card">
+        <div class="step-number">1.</div>
+        <div class="step-title">Check in for your appointment.</div>
+        <br><br><br><br><br>
+        <img class="process__step-image" 
+        src="https://www.vitalant.org/getattachment/89db149a-36b4-43d8-84ad-c13f4a316045/icon-desk.png?lang=en-US&amp;ext=.png"
+         alt="&quot;Desk&quot;">
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">2.</div>
+        <div class="step-title">Meet with trained staff to complete health screening and questionnaire.</div>
+        
+        <img class="process__step-image" 
+        src="https://www.vitalant.org/getattachment/0c74f8bf-7f5f-46d9-ba8c-2a36f6b777b2/icon-stethoscope.png?lang=en-US&amp;ext=.png" 
+        alt="&quot;Stethoscope&quot;">
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">3.</div>
+        <div class="step-title">Donor care specialist will review results and determine the best way for you to donate.</div>
+        <img class="process__step-image"
+         src="https://www.vitalant.org/getattachment/e2d7bcfb-115f-4701-b6a8-24f8e4019edd/icon-notes.png?lang=en-US&amp;ext=.png" 
+        alt="&quot;Paper" and="" pencil&quot;="">
+      </div> 
+    </div>
+    <div class="main2">
+      <div class="step-card">
+        <div class="step-number">4.</div>
+        <div class="step-title">Relax while your specialist prepares materials and equipment.</div>
+        <br>
+        <img class="process__step-image" 
+        src="https://www.vitalant.org/getattachment/bc630437-1a1f-4d09-be32-c9952e0a6aa1/icon-chair.png?lang=en-US&amp;ext=.png" 
+        alt="&quot;Patient" in="" chair&quot;="">
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">5.</div>
+        <div class="step-title">Specialist will clean an area on your arm and insert a sterile needle to begin.</div>
+        <img class="process__step-image"
+         src="https://www.vitalant.org/getattachment/afbb7571-c351-4589-ad03-926f5fbdae72/icon-iv.png?lang=en-US&amp;ext=.png"
+         alt="&quot;Hand" with="" sterile="" needle="" inserted&quot;="">
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">6.</div>
+        <div class="step-title">Samples of your blood will be collected for testing.</div>
+        <br><br><br><br>
+        <img class="process__step-image"
+         src="https://www.vitalant.org/getattachment/b9cb53af-7a52-4657-893c-59e9a231c172/icon-test-tubes.png?lang=en-US&amp;ext=.png"
+         alt="&quot;Test" tube="" samples&quot;="">
+      </div>
+    </div>
+    <div class="main3">
+      <div class="step-card">
+        <div class="step-number">7.</div>
+        <div class="step-title">You will then complete the whole blood donation process, which can take up to 15 minutes (usually 1O).</div>
+        <img class="process__step-image" 
+        src="https://www.vitalant.org/getattachment/40b4a0d3-f8c8-4c95-b7ca-7a5829b866e4/icon-blood-bag.png?lang=en-US&amp;ext=.png" 
+        alt="&quot;Collected" blood&quot;="">
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">8.</div>
+        <div class="step-title">Enjoy light refreshments to replenish fluids and nutrients.</div>
+        <br><br><br<br><br><br><br<br><br><br><br<br><br>
+        <img class="process__step-image"
+        src="https://www.vitalant.org/getattachment/e39ed217-7cab-458d-a701-d2995068d17b/icon-snacks.png?lang=en-US&amp;ext=.png" 
+        alt="&quot;Snacks&quot;">
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">9.</div>
+        <div class="step-title">You’re done! Feel proud knowing you’ve saved up to three lives, and encourage friends and family to donate!</div>
+        <img class="process__step-image"
+        src="https://www.vitalant.org/getattachment/664ce1ee-cbcc-4048-8385-5733389be1dc/icon-group.png?lang=en-US&amp;ext=.png" 
+        alt="&quot;A" group="" of="" three="" people&quot;="">
+      </div> 
+    </div>  
+   </div> 
+    </body>
+  `;
+}
 
 // Register form handler
 function handleRegister(event) {
