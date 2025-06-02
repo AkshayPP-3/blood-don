@@ -366,6 +366,38 @@ function resizeCanvas() {
   initParticles();
 }
 
+const compatibility = {
+  "A+": { donateTo: ["A+", "AB+"], receiveFrom: ["A+", "A-", "O+", "O-"] },
+  "A-": { donateTo: ["A+", "A-", "AB+", "AB-"], receiveFrom: ["A-", "O-"] },
+  "B+": { donateTo: ["B+", "AB+"], receiveFrom: ["B+", "B-", "O+", "O-"] },
+  "B-": { donateTo: ["B+", "B-", "AB+", "AB-"], receiveFrom: ["B-", "O-"] },
+  "AB+": {
+    donateTo: ["AB+"],
+    receiveFrom: ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"],
+  },
+  "AB-": { donateTo: ["AB+", "AB-"], receiveFrom: ["A-", "B-", "AB-", "O-"] },
+  "O+": { donateTo: ["A+", "B+", "O+", "AB+"], receiveFrom: ["O+", "O-"] },
+  "O-": {
+    donateTo: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"],
+    receiveFrom: ["O-"],
+  },
+};
+
+function showCompatibility() {
+  const selected = document.getElementById("blood-group").value;
+  const donateList = compatibility[selected].donateTo;
+  const receiveList = compatibility[selected].receiveFrom;
+
+  const donateUl = document.getElementById("donate-to");
+  const receiveUl = document.getElementById("receive-from");
+
+  donateUl.innerHTML = donateList.map((bg) => `<li>${bg}</li>`).join("");
+  receiveUl.innerHTML = receiveList.map((bg) => `<li>${bg}</li>`).join("");
+
+  document.getElementById("results").style.display = "block";
+}
+
+
 window.addEventListener("resize", resizeCanvas);
 
 window.onload = () => {
@@ -374,3 +406,5 @@ window.onload = () => {
   initializeMap();
   navigate("landing");
 };
+
+
