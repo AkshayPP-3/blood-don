@@ -49,8 +49,35 @@
              C14.46 4.99 15.96 4 17.5 4 20 4 22 6 22 8.5
              c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
       </svg>
-      <br>
-      <br>
+
+      <br><br><br>
+      <div class="choosing">
+        <h1>Blood Donation Compatibility</h1>
+
+        <div class="selector">
+          <label for="blood-group">Select Your Blood Group:</label>
+          <select id="blood-group" onchange="showCompatibility()">
+            <option value="" disabled selected>--Choose--</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+        </div>
+
+        <div class="results" id="results" style="display: none;">
+          <h3>You Can Donate To:</h3>
+          <ul id="donate-to"></ul>
+          <h3>You Can Receive From:</h3>
+          <ul id="receive-from"></ul>
+        </div>
+        
+        
+      </div>
 
     </section>
     <section id="about" class="card about-section">
