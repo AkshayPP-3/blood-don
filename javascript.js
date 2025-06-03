@@ -250,6 +250,69 @@ function showBlankPage(event) {
     </body>
   `;
 }
+// eligibility
+//learn more 
+function showEligibility(event) {
+  event.preventDefault();
+
+  document.documentElement.innerHTML = `
+    <head>
+      <title>Blood Donation Eligibility</title>
+      <style>
+        body {
+          font-family: Arial, sans-serif;
+          padding: 30px;
+          background-color: #f9f9f9;
+          color: #333;
+          max-width: 700px;
+          margin: auto;
+        }
+        h1 {
+          color: #d32f2f;
+        }
+        .eligibility-criteria1 {
+          
+        
+        }
+        .eligibility-criteria1 p {
+          background-color: #fff;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        button {
+          margin-top: 30px;
+          padding: 10px 20px;
+          background-color: #d32f2f;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+        }
+        button:hover {
+          background-color: #b71c1c;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>Are You Eligible to Donate Blood?</h1>
+      <p>Donating blood is safe and easy to do. Find out the general eligibility criteria.</p>
+      <div class="eligibility-criteria1">
+        <h2>General Eligibility Criteria</h2>
+        <p>Must be at least 16 years old*</p>
+        <p>Must weigh at least 110 pounds</p>
+        <p>Must be in good health</p>
+        <p>Eat within 2 hours ahead of your donation</p>
+        <p>Must not have donated blood in the last 56 days</p>
+        <p>Drink plenty of non-alcoholic liquids</p>
+        <p>Bring a valid ID with your name and photo</p>
+      </div>
+      <button onclick="goBack()">Go Back</button>
+    </body>
+  `;
+}
 
 // Register form handler
 function handleRegister(event) {
