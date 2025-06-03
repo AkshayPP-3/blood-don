@@ -251,6 +251,7 @@ function showBlankPage(event) {
   `;
 }
 // eligibility
+
 //learn more 
 function showEligibility(event) {
   event.preventDefault();
@@ -313,6 +314,10 @@ function showEligibility(event) {
     </body>
   `;
 }
+const homePageContent = document.getElementById('app').innerHTML;
+function goBack() {
+      document.getElementById('app').innerHTML = homePageContent;
+    }
 
 // Register form handler
 function handleRegister(event) {
