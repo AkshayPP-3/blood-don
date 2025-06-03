@@ -158,6 +158,20 @@ function showBlankPage(event) {
           color: #777;
           margin-top: 4px;
         }
+        button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #b71c1c;
+        }
       </style>
     </head>
     <body>
@@ -247,8 +261,12 @@ function showBlankPage(event) {
       </div> 
     </div>  
    </div> 
+   <button onclick="goBack()">Go Back</button>
     </body>
   `;
+}
+function goBack() {
+  window.location.reload();
 }
 // eligibility
 
@@ -259,66 +277,161 @@ function showEligibility(event) {
   document.documentElement.innerHTML = `
     <head>
       <title>Blood Donation Eligibility</title>
-      <style>
+    <style>
         body {
-          font-family: Arial, sans-serif;
-          padding: 30px;
-          background-color: #f9f9f9;
-          color: #333;
-          max-width: 700px;
-          margin: auto;
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f9f9f9;
+            color: #333;
+            max-width: 700px;
+            margin: auto;
         }
+
         h1 {
-          color: #d32f2f;
+            color: #d32f2f;
         }
+
         .eligibility-criteria1 {
-          
-        
+            margin-bottom: 20px;
         }
-        .eligibility-criteria1 p {
-          background-color: #fff;
-          border: 1px solid #ccc;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+        .criteria-item {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.2s;
         }
+
+        .criteria-item:hover {
+            background: #f1f1f1;
+        }
+
+        .plus-symbol {
+            font-weight: bold;
+            color: #d32f2f;
+            margin-right: 10px;
+            font-size: 20px;
+            transition: transform 0.2s;
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
+
+        .criteria-desc {
+            display: none;
+            background: #f9f9f9;
+            border-left: 3px solid #d32f2f;
+            padding: 12px 16px;
+            margin-top: 10px;
+            border-radius: 6px;
+            color: #444;
+            font-size: 0.97em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .criteria-item.active .criteria-desc {
+            display: block;
+        }
+
+        .criteria-item.active .plus-symbol {
+            transform: rotate(45deg);
+        }
+
         button {
-          margin-top: 30px;
-          padding: 10px 20px;
-          background-color: #d32f2f;
-          color: white;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          font-size: 16px;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
         }
+
         button:hover {
-          background-color: #b71c1c;
+            background-color: #b71c1c;
         }
-      </style>
-    </head>
-    <body>
-      <h1>Are You Eligible to Donate Blood?</h1>
-      <p>Donating blood is safe and easy to do. Find out the general eligibility criteria.</p>
-      <div class="eligibility-criteria1">
+    </style>
+</head>
+
+<body>
+    <h1>Are You Eligible to Donate Blood?</h1>
+    <p>Donating blood is safe and easy to do. Find out the general eligibility criteria.</p>
+    <div class="eligibility-criteria1">
         <h2>General Eligibility Criteria</h2>
-        <p>Must be at least 16 years old*</p>
-        <p>Must weigh at least 110 pounds</p>
-        <p>Must be in good health</p>
-        <p>Eat within 2 hours ahead of your donation</p>
-        <p>Must not have donated blood in the last 56 days</p>
-        <p>Drink plenty of non-alcoholic liquids</p>
-        <p>Bring a valid ID with your name and photo</p>
-      </div>
-      <button onclick="goBack()">Go Back</button>
-    </body>
+        <div class="criteria-item" onclick="toggleCriteria(this)">
+            <span class="plus-symbol">+</span>
+            Must be at least 16 years old*
+            <div class="criteria-desc">You must be at least 16 years old to donate blood. Some locations may
+                require parental consent for donors under 18.</div>
+        </div>
+        <div class="criteria-item" onclick="toggleCriteria(this)">
+            <span class="plus-symbol">+</span>
+            Must weigh at least 110 pounds
+            <div class="criteria-desc"><img src="https://www.vitalant.org/getattachment/28ca4e7f-bd60-4753-b3e3-ceaf6f3541b1/meal-icon.png"
+                    alt="" class="fr-fic fr-dib">A minimum weight of 110 pounds (50 kg) is required to ensure donor safety and
+                adequate blood volume.</div>
+        </div>
+        <div class="criteria-item" onclick="toggleCriteria(this)">
+            <span class="plus-symbol">+</span>
+            Must be in good health
+            <div class="criteria-desc">You should feel well and healthy on the day of donation, with no cold, flu, or
+                infection symptoms.</div>
+        </div>
+        <div class="criteria-item" onclick="toggleCriteria(this)">
+            <span class="plus-symbol">+</span>
+            Eat within 2 hours ahead of your donation
+            <div class="criteria-desc">Eating a healthy meal within 2 hours before donating helps prevent dizziness or
+                fainting.</div>
+        </div>
+        <div class="criteria-item" onclick="toggleCriteria(this)">
+            <span class="plus-symbol">+</span>
+            Must not have donated blood in the last 56 days
+            <div class="criteria-desc"><img src="https://www.vitalant.org/getattachment/ddf5266b-2b82-47ac-b88e-5628d2b5c0a3/calendar-icon.png" alt="" class="fr-fic fr-dib">There must be at least 56 days (8 weeks) between whole blood donations to allow
+                your body to replenish.</div>
+        </div>
+        <div class="criteria-item" onclick="toggleCriteria(this)">
+            <span class="plus-symbol">+</span>
+            Drink plenty of non-alcoholic liquids
+            <div class="criteria-desc"><img src="https://www.vitalant.org/getattachment/72f82859-ded8-4594-9865-ccdde4ac5d1b/drink-icon.png" alt="" class="fr-fic fr-dib">Staying hydrated before and after donation helps maintain blood pressure and
+                recovery.</div>
+        </div>
+        <div class="criteria-item" onclick="toggleCriteria(this)">
+            <span class="plus-symbol">+</span>
+            Bring a valid ID with your name and photo
+            <div class="criteria-desc"><img src="https://www.vitalant.org/getattachment/b5a6426f-59ff-48db-a0cf-d992f20ae996/id-card-icon.png" alt="" class="fr-fic fr-dib">A government-issued photo ID is required for identification and record-keeping.
+            </div>
+        </div>
+    </div>
+    <button onclick="goBack()">Go Back</button>
+</body>
   `;
 }
+<<<<<<< HEAD
 const homePageContent = document.getElementById('app').innerHTML;
 function goBack() {
       document.getElementById('app').innerHTML = homePageContent;
     }
 
+=======
+function toggleCriteria(item) {
+            // Collapse all others
+            document.querySelectorAll('.criteria-item').forEach(function (div) {
+                if (div !== item) div.classList.remove('active');
+            });
+            // Toggle this one
+            item.classList.toggle('active');
+        }
+        function goBack() {
+            window.location.reload();
+        }
+>>>>>>> 1c303916f4dd3f754f2e30e07eec4b08be940ee2
 // Register form handler
 function handleRegister(event) {
   event.preventDefault();
