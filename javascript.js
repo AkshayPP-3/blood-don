@@ -975,44 +975,98 @@ style.innerHTML = `
 `;
 document.head.appendChild(style);
 
-// Records section
-function showRecords() {
-  // For demo, use a fixed value for donatedLitres
+// Records section with multi-level navigation and locked next levels
+typeof window !== 'undefined' && (function() {
+  let currentLevelIndex = 0;
+  // Demo: replace with real user data
   let donatedLitres = 2.5; // Change this value to test different levels
-  let level = '';
-  let emoji = '';
-  let nextLevel = '';
-  let progress = 0;
-  if (donatedLitres >= 5) {
-    level = 'Gold Level';
-    emoji = '🥇';
-    nextLevel = 'Max Level!';
-    progress = 100;
-  } else if (donatedLitres >= 2) {
-    level = 'Bronze Level';
-    emoji = '🥉';
-    nextLevel = 'Next: Gold at 5L';
-    progress = Math.round((donatedLitres / 5) * 100);
-  } else {
-    level = 'Keep Donating!';
-    emoji = '🩸';
-    nextLevel = 'Next: Bronze at 2L';
-    progress = Math.round((donatedLitres / 2) * 100);
+  const levels = [
+    { name: 'Keep Donating!', emoji: '🩸', threshold: 0, next: 'Bronze', nextAt: 2 },
+    { name: 'Bronze', emoji: '🥉', threshold: 2, next: 'Silver', nextAt: 3 },
+    { name: 'Silver', emoji: '🥈', threshold: 3, next: 'Gold', nextAt: 5 },
+    { name: 'Gold', emoji: '🥇', threshold: 5, next: 'Platinum', nextAt: 8 },
+    { name: 'Platinum', emoji: '🏆', threshold: 8, next: 'Diamond', nextAt: 12 },
+    { name: 'Diamond', emoji: '💎', threshold: 12, next: 'Legend', nextAt: 20 },
+    { name: 'Legend', emoji: '👑', threshold: 20, next: null, nextAt: null }
+  ];
+
+  function getUserLevelIndex() {
+    for (let i = levels.length - 1; i >= 0; i--) {
+      if (donatedLitres >= levels[i].threshold) return i;
+    }
+    return 0;
   }
-  document.getElementById('recordsContent').innerHTML = `
-    <div style="background: linear-gradient(135deg, #2d2d4d 0%, #b993d6 100%); border-radius: 18px; box-shadow: 0 8px 32px rgba(80,0,120,0.25), 0 1.5px 8px #fff2; padding: 32px 28px 24px 28px; max-width: 400px; margin: 32px auto 0 auto; color: #fff; text-align: center; position: relative;">
-      <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 18px;">
-        <span style="font-size: 3.2rem; background: #fff3; border-radius: 50%; padding: 18px 22px; box-shadow: 0 2px 12px #fff5, 0 0 0 4px #fff2; border: 2.5px solid #fff8;">${emoji}</span>
+
+  function renderRecordsCard() {
+    const level = levels[currentLevelIndex];
+    const userLevelIndex = getUserLevelIndex();
+    // Progress to next level
+    let progress = 100;
+    let nextLabel = '';
+    if (level.next) {
+      const nextLevel = levels[currentLevelIndex + 1];
+      if (donatedLitres < nextLevel.threshold) {
+        progress = Math.round(((donatedLitres - level.threshold) / (nextLevel.threshold - level.threshold)) * 100);
+        if (progress < 0) progress = 0;
+        nextLabel = `Next: ${nextLevel.name} at ${nextLevel.threshold}L`;
+      } else {
+        progress = 100;
+        nextLabel = `Unlocked!`;
+      }
+    } else {
+      nextLabel = 'Max Level!';
+    }
+    // Arrow button states
+    const leftDisabled = currentLevelIndex === 0;
+    const rightDisabled = currentLevelIndex === levels.length - 1;
+    // Next level card (right side)
+    let nextLevelCard = '';
+    if (currentLevelIndex < levels.length - 1) {
+      const next = levels[currentLevelIndex + 1];
+      const locked = donatedLitres < next.threshold;
+      nextLevelCard = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 120px; height: 170px; background: #fff2; border-radius: 14px; margin-left: 18px; box-shadow: 0 2px 8px #0002; position: relative;">
+          <span style="font-size: 2.2rem; background: #fff3; border-radius: 50%; padding: 10px 14px; margin-bottom: 8px; border: 2px solid #fff5;">${next.emoji}</span>
+          <div style="font-size: 1.1rem; color: #ffe082; font-weight: 600;">${next.name}</div>
+          <div style="font-size: 0.95rem; color: #fff; margin-top: 4px;">at ${next.threshold}L</div>
+          ${locked ? `<div style='position:absolute;top:8px;right:8px;font-size:1.3rem;color:#fff;'><span title='Locked'>🔒</span></div><div style='color:#fff;margin-top:10px;font-size:0.98rem;'>Locked</div>` : `<div style='color:#b2ff59;margin-top:10px;font-size:0.98rem;'>Unlocked!</div>`}
+        </div>
+      `;
+    }
+    // Main card
+    document.getElementById('recordsContent').innerHTML = `
+      <div style="display: flex; justify-content: center; align-items: center; margin-top: 32px;">
+        <button id="arrowLeft" ${leftDisabled ? 'disabled' : ''} style="background: none; border: none; color: #fff; font-size: 0.95rem; cursor: pointer; opacity: ${leftDisabled ? 0.3 : 1}; margin-right: 10px; padding: 6px 10px; border-radius: 6px; background: #fff1;">Previous Level</button>
+        <div style="background: linear-gradient(135deg, #2d2d4d 0%, #b993d6 100%); border-radius: 18px; box-shadow: 0 8px 32px rgba(80,0,120,0.25), 0 1.5px 8px #fff2; padding: 32px 28px 24px 28px; min-width: 260px; max-width: 340px; color: #fff; text-align: center; position: relative;">
+          <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 18px;">
+            <span style="font-size: 3.2rem; background: #fff3; border-radius: 50%; padding: 18px 22px; box-shadow: 0 2px 12px #fff5, 0 0 0 4px #fff2; border: 2.5px solid #fff8;">${level.emoji}</span>
+          </div>
+          <h3 style="font-size: 1.5rem; margin: 0 0 8px 0; letter-spacing: 1.2px; color: #ffe082; text-shadow: 0 2px 8px #0005;">${level.name} Level</h3>
+          <p style="margin: 8px 0 12px 0; font-size: 1.1rem;">You have donated <strong>${donatedLitres} litres</strong> of blood.</p>
+          <div style="width: 90%; height: 18px; background: #fff2; border-radius: 10px; margin: 0 auto 10px auto; overflow: hidden; box-shadow: 0 1px 4px #0002;">
+            <div style="height: 100%; background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%); border-radius: 10px 0 0 10px; transition: width 0.6s cubic-bezier(.4,2,.3,1); width: ${progress}%"></div>
+          </div>
+          <p style="font-size: 0.98rem; color: #ffe082; margin-top: 0;">${nextLabel}</p>
+        </div>
+        ${nextLevelCard}
+        <button id="arrowRight" ${rightDisabled ? 'disabled' : ''} style="background: none; border: none; color: #fff; font-size: 0.95rem; cursor: pointer; opacity: ${rightDisabled ? 0.3 : 1}; margin-left: 10px; padding: 6px 10px; border-radius: 6px; background: #fff1;">Next Level</button>
       </div>
-      <h3 style="font-size: 1.5rem; margin: 0 0 8px 0; letter-spacing: 1.2px; color: #ffe082; text-shadow: 0 2px 8px #0005;">${level}</h3>
-      <p style="margin: 8px 0 12px 0; font-size: 1.1rem;">You have donated <strong>${donatedLitres} litres</strong> of blood.</p>
-      <div style="width: 90%; height: 18px; background: #fff2; border-radius: 10px; margin: 0 auto 10px auto; overflow: hidden; box-shadow: 0 1px 4px #0002;">
-        <div style="height: 100%; background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%); border-radius: 10px 0 0 10px; transition: width 0.6s cubic-bezier(.4,2,.3,1); width: ${progress}%"></div>
-      </div>
-      <p style="font-size: 0.98rem; color: #ffe082; margin-top: 0;">${nextLevel}</p>
-    </div>
-  `;
-  navigate('records');
-}
+    `;
+    // Arrow event listeners
+    setTimeout(() => {
+      const leftBtn = document.getElementById('arrowLeft');
+      const rightBtn = document.getElementById('arrowRight');
+      if (leftBtn) leftBtn.onclick = () => { currentLevelIndex--; renderRecordsCard(); };
+      if (rightBtn) rightBtn.onclick = () => { currentLevelIndex++; renderRecordsCard(); };
+    }, 0);
+  }
+
+  window.showRecords = function() {
+    // Always start at user's current level
+    currentLevelIndex = getUserLevelIndex();
+    renderRecordsCard();
+    navigate('records');
+  };
+})();
 
 
