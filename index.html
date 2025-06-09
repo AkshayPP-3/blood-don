@@ -19,21 +19,21 @@
     <p>Connect Hospitals, NGOs, and Donors in Real Time</p>
   </header>
 
-  <nav class="animated-nav">
+  <nav class="animated-nav" aria-label="Main Navigation">
     <div class="nav-left">
-      <a href="#" onclick="navigate('landing')">Home</a>
-      <a href="#" onclick="navigate('donor')">Donor Dashboard</a>
-      <a href="#" onclick="navigate('hospital')">Hospital Dashboard</a>
-      <a href="#" onclick="navigate('map')">Map View</a>
+      <a href="#" onclick="navigate('landing')" tabindex="0">Home</a>
+      <a href="#" onclick="navigate('donor')" tabindex="0">Donor Dashboard</a>
+      <a href="#" onclick="navigate('hospital')" tabindex="0">Hospital Dashboard</a>
+      <a href="#" onclick="navigate('map')" tabindex="0">Map View</a>
     </div>
     <div class="nav-right">
-      <a href="#" onclick="navigate('login')">Login</a>
-      <a href="#" onclick="navigate('register')">Register</a>
+      <a href="#" onclick="navigate('login')" tabindex="0">Login</a>
+      <a href="#" onclick="navigate('register')" tabindex="0">Register</a>
     </div>
   </nav>
 
   <div class="container">
-    <section id="landing" class="card">
+    <section id="landing" class="card" aria-label="Welcome Section">
       <h2>Welcome to Community Blood Donation</h2>
       <p>
         Whether you're a hospital in need or a donor willing to help, register today and start saving lives.
@@ -83,7 +83,7 @@
 
      <br>
       <br>
-      <section class="about-section">
+      <section class="about-section" aria-label="About Our Mission">
       
         <h2 class="about-title">About Our Mission</h2>
         <p>
@@ -99,7 +99,7 @@
         </p>
     </section>
  <!-- Learn More Section -->
-  <section class="learn-info">
+  <section class="learn-info" aria-label="Learn About Donating Blood">
     <h2>Learn About Donating Blood</h2>
     <p>
       Learn about every step in our simple blood donation process and what to expect.
@@ -107,7 +107,7 @@
     <a href="#" class="learn-more-button" onclick="showBlankPage(event)">Learn More</a>
   </section>
   <!-- Are you eligible? -->
-  <section class="eligibilty">
+  <section class="eligibilty" aria-label="Eligibility Criteria">
     <h2>Are You Eligible to Donate Blood?</h2>
     <p>
       Donating blood is safe and easy to do. Find out the general eligibility criteria.
@@ -121,7 +121,7 @@
   <!-- shoutout -->
     <section>
       <h2> Shoutout</h2>
-      <div class="shoutoutbar">
+      <div class="shoutoutbar" aria-label="Donor Shoutouts">
         <div class="shoutoutname1">
           <div class="bo1">
             <div class="bod1">
@@ -157,7 +157,7 @@
         </div>
       </div>
     </section>
-    <section id="donor" class="card hidden" aria-label="Donor Dashboard">
+    <section id="donor" class="card hidden" aria-label="Donor Registration">
       <h2>Donor Registration</h2>
       <form id="donorForm" onsubmit="return handleDonorSubmit(event)">
         <label for="donorName">Full Name</label>
@@ -188,9 +188,13 @@
         <button type="submit">Register as Donor</button>
       </form>
       <div id="donorMessage" role="alert"></div>
+      <div id="donorListSection">
+        <h3>Registered Donors</h3>
+        <ul id="donorList"></ul>
+      </div>
     </section>
 
-    <section id="hospital" class="card hidden" aria-label="Hospital Dashboard">
+    <section id="hospital" class="card hidden" aria-label="Hospital Request Form">
       <h2>Hospital Request Form</h2>
       <form id="hospitalForm" onsubmit="return handleHospitalSubmit(event)">
         <label for="hospitalName">Hospital Name</label>
@@ -224,12 +228,15 @@
         <button type="submit">Request Blood</button>
       </form>
       <div id="hospitalMessage" role="alert"></div>
+      <div id="hospitalListSection">
+        <h3>Blood Requests</h3>
+        <ul id="hospitalList"></ul>
+      </div>
     </section>
 
     <section id="map" class="card hidden" aria-label="Map View">
       <h2>Nearby Blood Donation Centers</h2>
-      <div id="leafletMap" style="height: 500px; width: 100%;" aria-live="polite" aria-atomic="true"
-        aria-label="Map of donation centers">
+      <div id="leafletMap" style="height: 500px; width: 100%;" aria-live="polite" aria-atomic="true" aria-label="Map of donation centers" tabindex="0">
         <!-- Leaflet map will appear here -->
       </div>
     </section>
@@ -264,6 +271,56 @@
       </form>
       <div id="registerMessage" role="alert"></div>
     </section>
+
+    <section id="profile" class="card hidden" aria-label="Profile">
+      <h2>Your Profile</h2>
+      <div id="profileContent">
+        <!-- Profile info will be loaded here -->
+      </div>
+      <button onclick="showRecords()">Go to Records</button>
+      <button onclick="logout()">Logout</button>
+    </section>
+
+    <section id="records" class="card hidden" aria-label="Donation Records">
+      <h2>Your Donation Records</h2>
+      <div id="recordsContent">
+        <!-- Records info will be loaded here -->
+      </div>
+      <button onclick="navigate('profile')">Back to Profile</button>
+    </section>
+
+    <section id="edit-profile" class="card hidden" aria-label="Edit Profile">
+      <h2>Edit Profile</h2>
+      <form id="editProfileForm" onsubmit="return handleEditProfile(event)">
+        <label for="editName">Full Name</label>
+        <input type="text" id="editName" name="editName" required />
+        <label for="editEmail">Email</label>
+        <input type="email" id="editEmail" name="editEmail" required />
+        <label for="editPassword">New Password (leave blank to keep current)</label>
+        <input type="password" id="editPassword" name="editPassword" minlength="6" />
+        <button type="submit">Save Changes</button>
+      </form>
+      <div id="editProfileMessage" role="alert"></div>
+    </section>
+
+    <!-- Remove Admin Login section -->
+    <!-- <section id="admin-login" class="card hidden" aria-label="Admin Login">
+      <h2>Admin Login</h2>
+      <form id="adminLoginForm" onsubmit="return handleAdminLogin(event)">
+        <label for="adminEmail">Email</label>
+        <input type="email" id="adminEmail" name="adminEmail" required />
+        <label for="adminPassword">Password</label>
+        <input type="password" id="adminPassword" name="adminPassword" required />
+        <button type="submit">Login as Admin</button>
+      </form>
+      <div id="adminLoginMessage" role="alert"></div>
+    </section> -->
+    <!-- Remove Admin Panel section -->
+    <!-- <section id="admin-panel" class="card hidden" aria-label="Admin Panel">
+      <h2>Admin Panel</h2>
+      <div id="adminPanelContent"></div>
+      <button onclick="logoutAdmin()">Logout</button>
+    </section> -->
   </div>
 
   <footer>

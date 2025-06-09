@@ -37,8 +37,23 @@ function handleDonorSubmit(event) {
     return false;
   }
 
-  message.textContent = "Donor registered successfully!";
-  event.target.reset();
+  fetch('http://localhost:3000/api/donors', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, phone, bloodGroup, location })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.message) {
+        message.textContent = "Donor registered successfully!";
+        event.target.reset();
+      } else {
+        message.textContent = data.message || "Registration failed.";
+      }
+    })
+    .catch(() => {
+      message.textContent = "Server error. Please try again later.";
+    });
   return false;
 }
 
@@ -65,8 +80,23 @@ function handleHospitalSubmit(event) {
     return false;
   }
 
-  message.textContent = "Blood request submitted successfully!";
-  event.target.reset();
+  fetch('http://localhost:3000/api/hospitals', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ hospitalName, contactPerson, hospitalPhone, bloodGroup, unitsNeeded, location })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.message) {
+        message.textContent = "Blood request submitted successfully!";
+        event.target.reset();
+      } else {
+        message.textContent = data.message || "Request failed.";
+      }
+    })
+    .catch(() => {
+      message.textContent = "Server error. Please try again later.";
+    });
   return false;
 }
 
@@ -82,10 +112,50 @@ function handleLogin(event) {
     return false;
   }
 
-  message.textContent = "Login successful!";
-  event.target.reset();
+  fetch('http://localhost:3000/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        message.textContent = `Welcome, ${data.name}!`;
+        // Show profile section and load profile info
+        showProfile(email);
+        navigate('profile');
+        event.target.reset();
+      } else {
+        message.textContent = data.message || 'Login failed.';
+      }
+    })
+    .catch(() => {
+      message.textContent = 'Server error. Please try again later.';
+    });
   return false;
 }
+
+function showProfile(email) {
+  fetch(`http://localhost:3000/api/profile?email=${encodeURIComponent(email)}`)
+    .then(res => res.json())
+    .then(data => {
+      const profileDiv = document.getElementById('profileContent');
+      if (data.success) {
+        profileDiv.innerHTML = `<p><strong>Name:</strong> ${data.profile.name}</p><p><strong>Email:</strong> ${data.profile.email}</p><button onclick="showEditProfile('${data.profile.name}','${data.profile.email}')">Edit Profile</button>`;
+      } else {
+        profileDiv.innerHTML = '<p>Profile not found.</p>';
+      }
+    })
+    .catch(() => {
+      document.getElementById('profileContent').innerHTML = '<p>Error loading profile.</p>';
+    });
+}
+
+function logout() {
+  navigate('login');
+  document.getElementById('profileContent').innerHTML = '';
+}
+
 //learn more 
 function showBlankPage(event) {
   event.preventDefault();  // prevent default link jump
@@ -550,8 +620,23 @@ function handleRegister(event) {
     return false;
   }
 
-  message.textContent = "Registration successful!";
-  event.target.reset();
+  fetch('http://localhost:3000/api/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        message.textContent = "Registration successful!";
+        event.target.reset();
+      } else {
+        message.textContent = data.message || "Registration failed.";
+      }
+    })
+    .catch(() => {
+      message.textContent = "Server error. Please try again later.";
+    });
   return false;
 }
 
@@ -683,7 +768,6 @@ function showCompatibility() {
   document.getElementById("results").style.display = "block";
 }
 
-
 window.addEventListener("resize", resizeCanvas);
 
 window.onload = () => {
@@ -692,5 +776,243 @@ window.onload = () => {
   initializeMap();
   navigate("landing");
 };
+
+function showEditProfile(currentName, currentEmail) {
+  document.getElementById('editName').value = currentName;
+  document.getElementById('editEmail').value = currentEmail;
+  document.getElementById('editPassword').value = '';
+  navigate('edit-profile');
+}
+
+function showEditProfileFromProfile() {
+  // Use current profile info if available
+  const name = document.querySelector('#profileContent strong')?.textContent || '';
+  const email = document.querySelector('#profileContent p strong + br')?.nextSibling?.textContent || '';
+  showEditProfile(name, email);
+}
+
+function handleEditProfile(event) {
+  event.preventDefault();
+  const name = document.getElementById('editName').value.trim();
+  const email = document.getElementById('editEmail').value.trim();
+  const password = document.getElementById('editPassword').value.trim();
+  const message = document.getElementById('editProfileMessage');
+  const currentEmail = localStorage.getItem('userEmail');
+  if (!name || !email) {
+    message.textContent = 'Name and email are required.';
+    return false;
+  }
+  fetch('http://localhost:3000/api/edit-profile', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ currentEmail, name, email, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      message.textContent = data.message || 'Profile updated.';
+      if (data.success) {
+        localStorage.setItem('userEmail', email);
+      }
+    })
+    .catch(() => {
+      message.textContent = 'Server error. Please try again later.';
+    });
+  return false;
+}
+
+// Admin login handler
+function handleAdminLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('adminEmail').value.trim();
+  const password = document.getElementById('adminPassword').value.trim();
+  const message = document.getElementById('adminLoginMessage');
+  fetch('http://localhost:3000/api/admin-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        message.textContent = 'Admin login successful!';
+        showAdminPanel();
+      } else {
+        message.textContent = data.message || 'Login failed.';
+      }
+    })
+    .catch(() => {
+      message.textContent = 'Server error. Please try again later.';
+    });
+  return false;
+}
+
+function showAdminPanel() {
+  navigate('admin-panel');
+  loadAdminPanelContent();
+}
+
+function loadAdminPanelContent() {
+  Promise.all([
+    fetch('http://localhost:3000/api/admin/users').then(res => res.json()),
+    fetch('http://localhost:3000/api/admin/donors').then(res => res.json()),
+    fetch('http://localhost:3000/api/admin/hospitals').then(res => res.json())
+  ]).then(([users, donors, hospitals]) => {
+    let html = '<h3>Users</h3><ul>';
+    users.forEach(u => {
+      html += `<li>${u.name} (${u.email}) <button onclick=\"deleteUser('${u.email}')\">Delete</button></li>`;
+    });
+    html += '</ul><h3>Donors</h3><ul>';
+    donors.forEach(d => {
+      html += `<li>${d.name} (${d.email}) - ${d.bloodGroup} (${d.location})</li>`;
+    });
+    html += '</ul><h3>Hospital Requests</h3><ul>';
+    hospitals.forEach((h, i) => {
+      html += `<li>${h.hospitalName} (${h.requiredBloodGroup}) - ${h.location} [${h.status || 'pending'}] <button onclick=\"updateHospitalRequest(${i},'approved')\">Approve</button> <button onclick=\"updateHospitalRequest(${i},'rejected')\">Reject</button></li>`;
+    });
+    html += '</ul>';
+    document.getElementById('adminPanelContent').innerHTML = html;
+  });
+}
+
+function deleteUser(email) {
+  fetch('http://localhost:3000/api/admin/delete-user', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email })
+  })
+    .then(res => res.json())
+    .then(() => loadAdminPanelContent());
+}
+
+function updateHospitalRequest(id, status) {
+  fetch('http://localhost:3000/api/admin/update-hospital', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id, status })
+  })
+    .then(res => res.json())
+    .then(() => loadAdminPanelContent());
+}
+
+function logoutAdmin() {
+  navigate('admin-login');
+  document.getElementById('adminPanelContent').innerHTML = '';
+}
+
+// Add functions to fetch and display donor and hospital lists
+function fetchAndDisplayDonors() {
+  fetch('http://localhost:3000/api/donors')
+    .then(res => res.json())
+    .then(donors => {
+      const donorList = document.getElementById('donorList');
+      if (!donors.length) {
+        donorList.innerHTML = '<li>No donors registered yet.</li>';
+        return;
+      }
+      donorList.innerHTML = donors.map(d => `<li><strong>${d.name}</strong> (${d.bloodGroup}) - ${d.location} <br>Email: ${d.email}, Phone: ${d.phone}</li>`).join('');
+    })
+    .catch(() => {
+      document.getElementById('donorList').innerHTML = '<li>Error loading donors.</li>';
+    });
+}
+
+function fetchAndDisplayHospitals() {
+  fetch('http://localhost:3000/api/hospitals')
+    .then(res => res.json())
+    .then(hospitals => {
+      const hospitalList = document.getElementById('hospitalList');
+      if (!hospitals.length) {
+        hospitalList.innerHTML = '<li>No blood requests yet.</li>';
+        return;
+      }
+      hospitalList.innerHTML = hospitals.map(h => `<li><strong>${h.hospitalName}</strong> (${h.bloodGroup}) - ${h.location} <br>Contact: ${h.contactPerson}, Phone: ${h.hospitalPhone}, Units: ${h.unitsNeeded}</li>`).join('');
+    })
+    .catch(() => {
+      document.getElementById('hospitalList').innerHTML = '<li>Error loading requests.</li>';
+    });
+}
+
+// Patch navigate to refresh lists when showing dashboards
+const originalNavigate = navigate;
+navigate = function(sectionId) {
+  originalNavigate(sectionId);
+  if (sectionId === 'donor') fetchAndDisplayDonors();
+  if (sectionId === 'hospital') fetchAndDisplayHospitals();
+};
+
+// Patch form handlers to refresh lists after submit
+const originalHandleDonorSubmit = handleDonorSubmit;
+handleDonorSubmit = function(event) {
+  const result = originalHandleDonorSubmit(event);
+  setTimeout(fetchAndDisplayDonors, 300); // slight delay to allow backend update
+  return result;
+};
+const originalHandleHospitalSubmit = handleHospitalSubmit;
+handleHospitalSubmit = function(event) {
+  const result = originalHandleHospitalSubmit(event);
+  setTimeout(fetchAndDisplayHospitals, 300);
+  return result;
+};
+// Add keyboard navigation for navigation bar
+const navLinks = document.querySelectorAll('.animated-nav a');
+navLinks.forEach(link => {
+  link.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      link.click();
+    }
+  });
+});
+
+// Improve color contrast for focus
+const style = document.createElement('style');
+style.innerHTML = `
+  .animated-nav a:focus {
+    outline: 3px solid #fff;
+    background: #b71c1c;
+    color: #fff !important;
+  }
+`;
+document.head.appendChild(style);
+
+// Records section
+function showRecords() {
+  // For demo, use a fixed value for donatedLitres
+  let donatedLitres = 2.5; // Change this value to test different levels
+  let level = '';
+  let emoji = '';
+  let nextLevel = '';
+  let progress = 0;
+  if (donatedLitres >= 5) {
+    level = 'Gold Level';
+    emoji = '🥇';
+    nextLevel = 'Max Level!';
+    progress = 100;
+  } else if (donatedLitres >= 2) {
+    level = 'Bronze Level';
+    emoji = '🥉';
+    nextLevel = 'Next: Gold at 5L';
+    progress = Math.round((donatedLitres / 5) * 100);
+  } else {
+    level = 'Keep Donating!';
+    emoji = '🩸';
+    nextLevel = 'Next: Bronze at 2L';
+    progress = Math.round((donatedLitres / 2) * 100);
+  }
+  document.getElementById('recordsContent').innerHTML = `
+    <div style="background: linear-gradient(135deg, #2d2d4d 0%, #b993d6 100%); border-radius: 18px; box-shadow: 0 8px 32px rgba(80,0,120,0.25), 0 1.5px 8px #fff2; padding: 32px 28px 24px 28px; max-width: 400px; margin: 32px auto 0 auto; color: #fff; text-align: center; position: relative;">
+      <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 18px;">
+        <span style="font-size: 3.2rem; background: #fff3; border-radius: 50%; padding: 18px 22px; box-shadow: 0 2px 12px #fff5, 0 0 0 4px #fff2; border: 2.5px solid #fff8;">${emoji}</span>
+      </div>
+      <h3 style="font-size: 1.5rem; margin: 0 0 8px 0; letter-spacing: 1.2px; color: #ffe082; text-shadow: 0 2px 8px #0005;">${level}</h3>
+      <p style="margin: 8px 0 12px 0; font-size: 1.1rem;">You have donated <strong>${donatedLitres} litres</strong> of blood.</p>
+      <div style="width: 90%; height: 18px; background: #fff2; border-radius: 10px; margin: 0 auto 10px auto; overflow: hidden; box-shadow: 0 1px 4px #0002;">
+        <div style="height: 100%; background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%); border-radius: 10px 0 0 10px; transition: width 0.6s cubic-bezier(.4,2,.3,1); width: ${progress}%"></div>
+      </div>
+      <p style="font-size: 0.98rem; color: #ffe082; margin-top: 0;">${nextLevel}</p>
+    </div>
+  `;
+  navigate('records');
+}
 
 
