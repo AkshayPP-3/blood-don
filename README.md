@@ -44,11 +44,17 @@ A modern, gamified web application for managing blood donations, donor/hospital 
 ## 📂 Project Structure
 
 ```
-├── index.html         # Main frontend UI
-├── styles.css         # All styles and card designs
-├── javascript.js      # All frontend logic and interactivity
-├── server.js          # Express backend API
-└── README.md          # This file
+├── public/
+│   ├── index.html         # Main frontend UI
+│   ├── styles.css         # All styles and card designs
+│   ├── javascript.js      # All frontend logic and interactivity
+│   ├── favicon.ico        # App icon
+│   └── README.md          # Frontend usage notes
+├── server.js              # Express backend API
+├── package.json           # Project config
+├── .gitignore             # Git ignore rules
+├── .renderignore          # Render deployment ignore rules
+└── README.md              # This file
 ```
 
 ---
@@ -61,7 +67,7 @@ A modern, gamified web application for managing blood donations, donor/hospital 
    cd blood-don
    ```
 2. **Install dependencies:**
-   > No dependencies required for demo (uses built-in Node.js modules and Express)
+   > Only Express and CORS are required for demo
    ```powershell
    npm install express cors
    ```
@@ -69,7 +75,9 @@ A modern, gamified web application for managing blood donations, donor/hospital 
    ```powershell
    node server.js
    ```
-4. **Open `index.html` in your browser.**
+4. **Access the app:**
+   - For local development: Open [http://localhost:10000](http://localhost:10000) (or the port shown in your terminal)
+   - For deployed version: Visit your Render-provided URL (e.g., https://blood-don-1.onrender.com)
 
 ---
 

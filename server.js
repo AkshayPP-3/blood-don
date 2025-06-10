@@ -152,6 +152,11 @@ app.post('/api/edit-profile', async (req, res) => {
   res.json({ success: true, message: 'Profile updated successfully.' });
 });
 
+// Fallback: serve index.html for any unknown route (SPA support)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
