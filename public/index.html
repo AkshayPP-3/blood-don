@@ -1,1 +1,99 @@
-<!-- ...existing code from index.html... -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Blood Donation</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="favicon.ico">
+</head>
+<body>
+  <nav>
+    <a href="#home" class="nav-link">Home</a>
+    <a href="#donor" class="nav-link">Donor Registration</a>
+    <a href="#hospital" class="nav-link">Hospital Registration</a>
+    <a href="#dashboard" class="nav-link">Dashboard</a>
+    <a href="#achievements" class="nav-link">Achievements</a>
+    <a href="#compatibility" class="nav-link">Blood Compatibility</a>
+    <a href="#login" class="nav-link">Login</a>
+  </nav>
+  <main>
+    <section id="home">
+      <h1>🩸 Community Blood Donation</h1>
+      <p>Welcome to the modern, gamified platform for blood donors and hospitals.</p>
+    </section>
+    <section id="donor" style="display:none">
+      <h2>Donor Registration</h2>
+      <form id="donor-form">
+        <input name="name" placeholder="Full Name" required>
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="bloodGroup" placeholder="Blood Group" required>
+        <button type="submit">Register as Donor</button>
+      </form>
+    </section>
+    <section id="hospital" style="display:none">
+      <h2>Hospital Registration</h2>
+      <form id="hospital-form">
+        <input name="name" placeholder="Hospital Name" required>
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="location" placeholder="Location" required>
+        <button type="submit">Register Hospital</button>
+      </form>
+    </section>
+    <section id="dashboard" style="display:none">
+      <h2>Dashboard</h2>
+      <div id="donor-list"></div>
+      <div id="hospital-list"></div>
+    </section>
+    <section id="achievements" style="display:none">
+      <h2>Achievements</h2>
+      <div id="achievement-card">
+        <span class="emoji"></span>
+        <span class="level"></span>
+        <span class="litres"></span> litres
+        <button id="prev-achievement">Previous</button>
+        <button id="next-achievement">Next</button>
+      </div>
+    </section>
+    <section id="compatibility" style="display:none">
+      <h2>Blood Compatibility Checker</h2>
+      <form id="blood-checker-form">
+        <select id="donor-group">
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+        <select id="recipient-group">
+          <option value="A+">A+</option>
+          <option value="A-">A-</option>
+          <option value="B+">B+</option>
+          <option value="B-">B-</option>
+          <option value="AB+">AB+</option>
+          <option value="AB-">AB-</option>
+          <option value="O+">O+</option>
+          <option value="O-">O-</option>
+        </select>
+        <button type="submit">Check</button>
+      </form>
+      <div id="compatibility-result"></div>
+    </section>
+    <section id="login" style="display:none">
+      <h2>Login</h2>
+      <form id="login-form">
+        <input name="email" type="email" placeholder="Email" required>
+        <input name="password" type="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Community Blood Donation. All rights reserved.</p>
+  </footer>
+  <script src="javascript.js"></script>
+</body>
+</html>
