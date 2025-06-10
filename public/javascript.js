@@ -37,7 +37,7 @@ function handleDonorSubmit(event) {
     return false;
   }
 
-  fetch('http://localhost:3000/api/donors', {
+  fetch('/api/donors', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, phone, bloodGroup, location })
@@ -80,7 +80,7 @@ function handleHospitalSubmit(event) {
     return false;
   }
 
-  fetch('http://localhost:3000/api/hospitals', {
+  fetch('/api/hospitals', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ hospitalName, contactPerson, hospitalPhone, bloodGroup, unitsNeeded, location })
@@ -112,7 +112,7 @@ function handleLogin(event) {
     return false;
   }
 
-  fetch('http://localhost:3000/api/login', {
+  fetch('/api/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
@@ -136,7 +136,7 @@ function handleLogin(event) {
 }
 
 function showProfile(email) {
-  fetch(`http://localhost:3000/api/profile?email=${encodeURIComponent(email)}`)
+  fetch(`/api/profile?email=${encodeURIComponent(email)}`)
     .then(res => res.json())
     .then(data => {
       const profileDiv = document.getElementById('profileContent');
@@ -620,7 +620,7 @@ function handleRegister(event) {
     return false;
   }
 
-  fetch('http://localhost:3000/api/register', {
+  fetch('/api/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password })
@@ -802,7 +802,7 @@ function handleEditProfile(event) {
     message.textContent = 'Name and email are required.';
     return false;
   }
-  fetch('http://localhost:3000/api/edit-profile', {
+  fetch('/api/edit-profile', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ currentEmail, name, email, password })
@@ -826,7 +826,7 @@ function handleAdminLogin(event) {
   const email = document.getElementById('adminEmail').value.trim();
   const password = document.getElementById('adminPassword').value.trim();
   const message = document.getElementById('adminLoginMessage');
-  fetch('http://localhost:3000/api/admin-login', {
+  fetch('/api/admin-login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password })
@@ -853,9 +853,9 @@ function showAdminPanel() {
 
 function loadAdminPanelContent() {
   Promise.all([
-    fetch('http://localhost:3000/api/admin/users').then(res => res.json()),
-    fetch('http://localhost:3000/api/admin/donors').then(res => res.json()),
-    fetch('http://localhost:3000/api/admin/hospitals').then(res => res.json())
+    fetch('/api/admin/users').then(res => res.json()),
+    fetch('/api/admin/donors').then(res => res.json()),
+    fetch('/api/admin/hospitals').then(res => res.json())
   ]).then(([users, donors, hospitals]) => {
     let html = '<h3>Users</h3><ul>';
     users.forEach(u => {
@@ -875,7 +875,7 @@ function loadAdminPanelContent() {
 }
 
 function deleteUser(email) {
-  fetch('http://localhost:3000/api/admin/delete-user', {
+  fetch('/api/admin/delete-user', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email })
@@ -885,7 +885,7 @@ function deleteUser(email) {
 }
 
 function updateHospitalRequest(id, status) {
-  fetch('http://localhost:3000/api/admin/update-hospital', {
+  fetch('/api/admin/update-hospital', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id, status })
@@ -901,7 +901,7 @@ function logoutAdmin() {
 
 // Add functions to fetch and display donor and hospital lists
 function fetchAndDisplayDonors() {
-  fetch('http://localhost:3000/api/donors')
+  fetch('/api/donors')
     .then(res => res.json())
     .then(donors => {
       const donorList = document.getElementById('donorList');
@@ -917,7 +917,7 @@ function fetchAndDisplayDonors() {
 }
 
 function fetchAndDisplayHospitals() {
-  fetch('http://localhost:3000/api/hospitals')
+  fetch('/api/hospitals')
     .then(res => res.json())
     .then(hospitals => {
       const hospitalList = document.getElementById('hospitalList');
