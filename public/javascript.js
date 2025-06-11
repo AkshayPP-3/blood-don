@@ -990,6 +990,11 @@ typeof window !== 'undefined' && (function() {
     { name: 'Legend', emoji: '👑', threshold: 20, next: null, nextAt: null }
   ];
 
+  // Helper to get level class
+  function getLevelClass(idx) {
+    return `level-${idx}`;
+  }
+
   function getUserLevelIndex() {
     for (let i = levels.length - 1; i >= 0; i--) {
       if (donatedLitres >= levels[i].threshold) return i;
@@ -998,66 +1003,106 @@ typeof window !== 'undefined' && (function() {
   }
 
   function renderRecordsCard() {
-    const level = levels[currentLevelIndex];
-    const userLevelIndex = getUserLevelIndex();
-    // Progress to next level
-    let progress = 100;
-    let nextLabel = '';
-    if (level.next) {
-      const nextLevel = levels[currentLevelIndex + 1];
-      if (donatedLitres < nextLevel.threshold) {
-        progress = Math.round(((donatedLitres - level.threshold) / (nextLevel.threshold - level.threshold)) * 100);
-        if (progress < 0) progress = 0;
-        nextLabel = `Next: ${nextLevel.name} at ${nextLevel.threshold}L`;
-      } else {
-        progress = 100;
-        nextLabel = `Unlocked!`;
+    // Only show previous, current, and next level cards
+    let cardsHtml = '';
+    const prevIdx = currentLevelIndex - 1;
+    const nextIdx = currentLevelIndex + 1;
+    if (prevIdx >= 0) {
+      const prev = levels[prevIdx];
+      const isUnlocked = donatedLitres >= prev.threshold;
+      let prevProgress = 100;
+      let prevProgressText = '';
+      if (prevIdx < levels.length - 1) {
+        const nextLevel = levels[prevIdx + 1];
+        // Per-level progress: how much donated in this level span
+        const donatedInLevel = Math.max(0, Math.min(donatedLitres - prev.threshold, nextLevel.threshold - prev.threshold));
+        prevProgress = Math.round((donatedInLevel / (nextLevel.threshold - prev.threshold)) * 100);
+        prevProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${prevProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedInLevel.toFixed(1)} / ${(nextLevel.threshold - prev.threshold)} L</div></div>`;
       }
-    } else {
-      nextLabel = 'Max Level!';
-    }
-    // Arrow button states
-    const leftDisabled = currentLevelIndex === 0;
-    const rightDisabled = currentLevelIndex === levels.length - 1;
-    // Next level card (right side)
-    let nextLevelCard = '';
-    if (currentLevelIndex < levels.length - 1) {
-      const next = levels[currentLevelIndex + 1];
-      const locked = donatedLitres < next.threshold;
-      nextLevelCard = `
-        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 120px; height: 170px; background: #fff2; border-radius: 14px; margin-left: 18px; box-shadow: 0 2px 8px #0002; position: relative;">
-          <span style="font-size: 2.2rem; background: #fff3; border-radius: 50%; padding: 10px 14px; margin-bottom: 8px; border: 2px solid #fff5;">${next.emoji}</span>
-          <div style="font-size: 1.1rem; color: #ffe082; font-weight: 600;">${next.name}</div>
-          <div style="font-size: 0.95rem; color: #fff; margin-top: 4px;">at ${next.threshold}L</div>
-          ${locked ? `<div style='position:absolute;top:8px;right:8px;font-size:1.3rem;color:#fff;'><span title='Locked'>🔒</span></div><div style='color:#fff;margin-top:10px;font-size:0.98rem;'>Locked</div>` : `<div style='color:#b2ff59;margin-top:10px;font-size:0.98rem;'>Unlocked!</div>`}
+      cardsHtml += `
+        <div class="achievement-card ${getLevelClass(prevIdx)}">
+          <div class="achievement-badge">${prev.emoji}</div>
+          <h3 class="achievement-title">${prev.name} Level</h3>
+          <div class="achievement-level">at ${prev.threshold}L</div>
+          ${prevProgressText || `<div class='progress-bar-bg'><div class='progress-bar-fill' style='width: 100%;'></div></div>`}
+          ${isUnlocked
+            ? `<div class='unlocked-text'><span title='Unlocked'>✔️</span>Unlocked</div>`
+            : `<div class='locked-badge' title='Locked'>🔒</div><div class='locked-text'><span>Locked</span></div>`}
         </div>
       `;
     }
-    // Main card
-    document.getElementById('recordsContent').innerHTML = `
-      <div style="display: flex; justify-content: center; align-items: center; margin-top: 32px;">
-        <button id="arrowLeft" ${leftDisabled ? 'disabled' : ''} style="background: none; border: none; color: #fff; font-size: 0.95rem; cursor: pointer; opacity: ${leftDisabled ? 0.3 : 1}; margin-right: 10px; padding: 6px 10px; border-radius: 6px; background: #fff1;">Previous Level</button>
-        <div style="background: linear-gradient(135deg, #2d2d4d 0%, #b993d6 100%); border-radius: 18px; box-shadow: 0 8px 32px rgba(80,0,120,0.25), 0 1.5px 8px #fff2; padding: 32px 28px 24px 28px; min-width: 260px; max-width: 340px; color: #fff; text-align: center; position: relative;">
-          <div style="display: flex; justify-content: center; align-items: center; margin-bottom: 18px;">
-            <span style="font-size: 3.2rem; background: #fff3; border-radius: 50%; padding: 18px 22px; box-shadow: 0 2px 12px #fff5, 0 0 0 4px #fff2; border: 2.5px solid #fff8;">${level.emoji}</span>
-          </div>
-          <h3 style="font-size: 1.5rem; margin: 0 0 8px 0; letter-spacing: 1.2px; color: #ffe082; text-shadow: 0 2px 8px #0005;">${level.name} Level</h3>
-          <p style="margin: 8px 0 12px 0; font-size: 1.1rem;">You have donated <strong>${donatedLitres} litres</strong> of blood.</p>
-          <div style="width: 90%; height: 18px; background: #fff2; border-radius: 10px; margin: 0 auto 10px auto; overflow: hidden; box-shadow: 0 1px 4px #0002;">
-            <div style="height: 100%; background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%); border-radius: 10px 0 0 10px; transition: width 0.6s cubic-bezier(.4,2,.3,1); width: ${progress}%"></div>
-          </div>
-          <p style="font-size: 0.98rem; color: #ffe082; margin-top: 0;">${nextLabel}</p>
+    // Current card (big)
+    const level = levels[currentLevelIndex];
+    let progress = 100;
+    let nextLabel = '';
+    let progressText = '';
+    if (level.next) {
+      const nextLevel = levels[currentLevelIndex + 1];
+      // Per-level progress: how much donated in this level span
+      const donatedInLevel = Math.max(0, Math.min(donatedLitres - level.threshold, nextLevel.threshold - level.threshold));
+      progress = Math.round((donatedInLevel / (nextLevel.threshold - level.threshold)) * 100);
+      progressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${progress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:1.05rem;color:#222;font-weight:700;'>${donatedInLevel.toFixed(1)} / ${(nextLevel.threshold - level.threshold)} L</div></div>`;
+      nextLabel = `Next: ${level.next} at ${level.nextAt}L`;
+    } else {
+      progressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: 100%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:1.05rem;color:#222;font-weight:700;'>${donatedLitres.toFixed(1)} L</div></div>`;
+      nextLabel = 'Max Level!';
+    }
+    cardsHtml += `
+      <div class="achievement-card current ${getLevelClass(currentLevelIndex)}">
+        <div class="achievement-badge">${level.emoji}</div>
+        <h3 class="achievement-title">${level.name} Level</h3>
+        <div class="achievement-level">at ${level.threshold}L</div>
+        <p>You have donated <strong>${donatedLitres} litres</strong> of blood.</p>
+        ${progressText}
+        <div class="next-label">${nextLabel}</div>
+      </div>
+    `;
+    if (nextIdx < levels.length) {
+      const next = levels[nextIdx];
+      const isUnlocked = donatedLitres >= next.threshold;
+      let nextProgress = 0;
+      let nextProgressText = '';
+      if (nextIdx < levels.length - 1) {
+        const afterNext = levels[nextIdx + 1];
+        // Per-level progress: how much donated in this level span
+        const donatedInLevel = Math.max(0, Math.min(donatedLitres - next.threshold, afterNext.threshold - next.threshold));
+        nextProgress = Math.round((donatedInLevel / (afterNext.threshold - next.threshold)) * 100);
+        nextProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${nextProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedInLevel.toFixed(1)} / ${(afterNext.threshold - next.threshold)} L</div></div>`;
+      } else {
+        // Last level: just show total
+        nextProgress = donatedLitres >= next.threshold ? 100 : 0;
+        nextProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${nextProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedLitres.toFixed(1)} L</div></div>`;
+      }
+      cardsHtml += `
+        <div class="achievement-card ${getLevelClass(nextIdx)}">
+          <div class="achievement-badge">${next.emoji}</div>
+          <h3 class="achievement-title">${next.name} Level</h3>
+          <div class="achievement-level">at ${next.threshold}L</div>
+          ${nextProgressText}
+          ${isUnlocked
+            ? `<div class='unlocked-text'><span title='Unlocked'>✔️</span>Unlocked</div>`
+            : `<div class='locked-badge' title='Locked'>🔒</div><div class='locked-text'><span>Locked</span></div>`}
         </div>
-        ${nextLevelCard}
-        <button id="arrowRight" ${rightDisabled ? 'disabled' : ''} style="background: none; border: none; color: #fff; font-size: 0.95rem; cursor: pointer; opacity: ${rightDisabled ? 0.3 : 1}; margin-left: 10px; padding: 6px 10px; border-radius: 6px; background: #fff1;">Next Level</button>
+      `;
+    }
+    // Arrows
+    const leftDisabled = currentLevelIndex === 0;
+    const rightDisabled = currentLevelIndex === levels.length - 1;
+    const leftArrow = `<button class="records-arrow left-arrow" id="arrowLeft" ${leftDisabled ? 'disabled' : ''} title="Previous Level"><svg width="32" height="64" viewBox="0 0 32 64" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="22,12 10,32 22,52" stroke="#6366f1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>`;
+    const rightArrow = `<button class="records-arrow right-arrow" id="arrowRight" ${rightDisabled ? 'disabled' : ''} title="Next Level"><svg width="32" height="64" viewBox="0 0 32 64" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="10,12 22,32 10,52" stroke="#6366f1" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></button>`;
+    document.getElementById('recordsContent').innerHTML = `
+      <div class="records-flex records-all-levels">
+        <div class="arrow-container arrow-left">${leftArrow}</div>
+        <div class="cards-scroll">${cardsHtml}</div>
+        <div class="arrow-container arrow-right">${rightArrow}</div>
       </div>
     `;
     // Arrow event listeners
     setTimeout(() => {
       const leftBtn = document.getElementById('arrowLeft');
       const rightBtn = document.getElementById('arrowRight');
-      if (leftBtn) leftBtn.onclick = () => { currentLevelIndex--; renderRecordsCard(); };
-      if (rightBtn) rightBtn.onclick = () => { currentLevelIndex++; renderRecordsCard(); };
+      if (leftBtn) leftBtn.onclick = () => { if (currentLevelIndex > 0) { currentLevelIndex--; renderRecordsCard(); } };
+      if (rightBtn) rightBtn.onclick = () => { if (currentLevelIndex < levels.length - 1) { currentLevelIndex++; renderRecordsCard(); } };
     }, 0);
   }
 

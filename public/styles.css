@@ -522,12 +522,18 @@ select {
   margin: 0 auto 10px auto;
   overflow: hidden;
   box-shadow: 0 1px 4px #0002;
+  /* Add a subtle background for empty progress */
+  position: relative;
 }
 .progress-bar-fill {
   height: 100%;
   background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
   border-radius: 10px 0 0 10px;
   transition: width 0.6s cubic-bezier(.4,2,.3,1);
+  min-width: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
 }
 #nextLevelText {
   font-size: 0.98rem;
@@ -543,6 +549,234 @@ select {
     font-size: 2.1rem;
     padding: 10px 12px;
   }
+}
+
+/* All-levels Records View */
+.records-all-levels {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  gap: 0;
+}
+.arrow-container {
+  width: 48px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  height: 100%;
+}
+.arrow-container.arrow-left {
+  left: 0;
+  justify-content: flex-start;
+}
+.arrow-container.arrow-right {
+  right: 0;
+  justify-content: flex-end;
+}
+.cards-scroll {
+  display: flex;
+  gap: 1.5rem;
+  overflow-x: hidden;
+  padding: 1.5rem 0.5rem 1.5rem 0.5rem;
+  scroll-behavior: smooth;
+  width: 100%;
+  justify-content: center;
+}
+.achievement-card {
+  min-width: 260px;
+  max-width: 320px;
+  min-height: 340px;
+  max-height: 420px;
+  margin: 0 1.2rem;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px 0 rgba(80, 80, 180, 0.13), 0 2px 12px 0 rgba(0,0,0,0.08);
+  padding: 2.2rem 1.5rem 1.7rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  transition: box-shadow 0.18s, transform 0.18s;
+  opacity: 0.97;
+  background: #fff;
+  border: 2.5px solid #e0e7ff;
+  position: relative;
+  overflow: hidden;
+}
+.achievement-card.current {
+  border: 3px solid #6366f1;
+  box-shadow: 0 12px 40px 0 rgba(99,102,241,0.18), 0 4px 16px 0 rgba(0,0,0,0.13);
+  transform: scale(1.13);
+  z-index: 2;
+  opacity: 1;
+  min-width: 340px;
+  max-width: 420px;
+  min-height: 400px;
+  background: linear-gradient(135deg, #f8fafc 60%, #e0e7ff 100%);
+}
+.achievement-badge {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fef9c3 60%, #fde68a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.8rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 2px 12px 0 rgba(251,191,36,0.13);
+  border: 3px solid #fde68a;
+  transition: box-shadow 0.18s, border 0.18s;
+}
+.achievement-card.current .achievement-badge {
+  background: linear-gradient(135deg, #fbbf24 60%, #f59e42 100%);
+  border: 4px solid #f59e42;
+  box-shadow: 0 4px 16px 0 rgba(251,191,36,0.18);
+  font-size: 3.6rem;
+  width: 90px;
+  height: 90px;
+}
+.achievement-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #222b45;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1.1px;
+  text-align: center;
+}
+.achievement-card.current .achievement-title {
+  font-size: 1.7rem;
+  color: #6366f1;
+  margin-bottom: 0.7rem;
+}
+.achievement-level {
+  font-size: 1.08rem;
+  color: #64748b;
+  margin-bottom: 0.7rem;
+  font-weight: 500;
+}
+.achievement-card.current .achievement-level {
+  font-size: 1.18rem;
+  color: #f59e42;
+  margin-bottom: 1.1rem;
+}
+.achievement-card p {
+  color: #444;
+  font-size: 1.08rem;
+  margin: 0.5rem 0 0.7rem 0;
+  text-align: center;
+}
+.achievement-card.current p {
+  color: #222b45;
+  font-size: 1.13rem;
+}
+.achievement-card .progress-bar-bg, .achievement-card .progress-bar-fill {
+  width: 90%;
+  height: 18px;
+  border-radius: 10px;
+  margin: 0 auto 10px auto;
+  overflow: hidden;
+  box-shadow: 0 1px 4px #0002;
+}
+.achievement-card .progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #ffb347 0%, #ffcc33 100%);
+  border-radius: 10px 0 0 10px;
+  transition: width 0.6s cubic-bezier(.4,2,.3,1);
+  min-width: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
+.achievement-card.level-0 {
+  background: linear-gradient(135deg, #f9fafc 60%, #e0e7ff 100%);
+  border-color: #a5b4fc;
+  color: #222b45;
+}
+.achievement-card.level-1 {
+  background: linear-gradient(135deg, #e0f7fa 60%, #b2ebf2 100%);
+  border-color: #4dd0e1;
+  color: #004d40;
+}
+.achievement-card.level-2 {
+  background: linear-gradient(135deg, #fce4ec 60%, #f8bbd0 100%);
+  border-color: #f06292;
+  color: #880e4f;
+}
+.achievement-card.level-3 {
+  background: linear-gradient(135deg, #fff3e0 60%, #ffe0b2 100%);
+  border-color: #ffb74d;
+  color: #6d4c00;
+}
+.achievement-card.level-4 {
+  background: linear-gradient(135deg, #e8f5e9 60%, #a5d6a7 100%);
+  border-color: #66bb6a;
+  color: #1b5e20;
+}
+.achievement-card.level-5 {
+  background: linear-gradient(135deg, #ede7f6 60%, #b39ddb 100%);
+  border-color: #7e57c2;
+  color: #311b92;
+}
+.achievement-card.level-6 {
+  background: linear-gradient(135deg, #fffde7 60%, #fff9c4 100%);
+  border-color: #ffd54f;
+  color: #795548;
+}
+.achievement-card.level-7 {
+  background: linear-gradient(135deg, #f3e5f5 60%, #ce93d8 100%);
+  border-color: #ab47bc;
+  color: #4a148c;
+}
+.achievement-card.level-8 {
+  background: linear-gradient(135deg, #e1f5fe 60%, #81d4fa 100%);
+  border-color: #29b6f6;
+  color: #01579b;
+}
+.achievement-card.level-9 {
+  background: linear-gradient(135deg, #fbe9e7 60%, #ffab91 100%);
+  border-color: #ff7043;
+  color: #bf360c;
+}
+.achievement-card .locked-badge {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 1.7rem;
+  color: #e53935;
+  background: #fff6f6;
+  border-radius: 50%;
+  padding: 4px 8px;
+  box-shadow: 0 2px 8px #e57373;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.achievement-card .locked-text {
+  color: #e53935;
+  font-size: 1.08rem;
+  margin-top: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  justify-content: center;
+}
+.achievement-card .unlocked-text {
+  color: #43a047;
+  font-size: 1.08rem;
+  margin-top: 0.7rem;
+  font-weight: 600;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  justify-content: center;
 }
 
 
