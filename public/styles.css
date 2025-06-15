@@ -779,4 +779,165 @@ select {
   justify-content: center;
 }
 
+/* Responsive styles for records/achievements section */
+@media (max-width: 900px) {
+  .records-all-levels {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+  .arrow-container {
+    width: 100%;
+    height: 48px;
+    justify-content: center;
+    align-items: center;
+    position: static;
+    margin-bottom: 0.5rem;
+  }
+  .cards-scroll {
+    flex-direction: row;
+    gap: 0.7rem;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .achievement-card {
+    min-width: 220px;
+    max-width: 90vw;
+    min-height: 260px;
+    max-height: 340px;
+    padding: 1.1rem 0.5rem 1.1rem 0.5rem;
+    margin: 0 0.5rem;
+  }
+  .achievement-card.current {
+    min-width: 250px;
+    max-width: 98vw;
+    min-height: 300px;
+    padding: 1.3rem 0.7rem 1.3rem 0.7rem;
+  }
+  .achievement-badge {
+    width: 54px;
+    height: 54px;
+    font-size: 2.1rem;
+  }
+  .achievement-card.current .achievement-badge {
+    width: 70px;
+    height: 70px;
+    font-size: 2.7rem;
+  }
+  .progress-bar-bg, .achievement-card .progress-bar-bg {
+    width: 98%;
+    height: 14px;
+    font-size: 0.9rem;
+  }
+  .progress-bar-fill, .achievement-card .progress-bar-fill {
+    height: 100%;
+  }
+  .records-arrow {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .records-arrow svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  .achievement-title, .achievement-card.current .achievement-title {
+    font-size: 1.1rem;
+  }
+  .achievement-level, .achievement-card.current .achievement-level {
+    font-size: 0.98rem;
+  }
+  .achievement-card p, .achievement-card.current p {
+    font-size: 0.98rem;
+  }
+  .next-label {
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .records-all-levels {
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: stretch;
+  }
+  .arrow-container {
+    width: 100%;
+    height: 38px;
+    margin-bottom: 0.2rem;
+  }
+  .cards-scroll {
+    flex-direction: row;
+    gap: 0.3rem;
+    padding: 0.2rem 0;
+    overflow-x: auto;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .achievement-card {
+    min-width: 170px;
+    max-width: 98vw;
+    min-height: 180px;
+    max-height: 260px;
+    padding: 0.7rem 0.2rem 0.7rem 0.2rem;
+    margin: 0 0.2rem;
+  }
+  .achievement-card.current {
+    min-width: 190px;
+    max-width: 99vw;
+    min-height: 210px;
+    padding: 0.9rem 0.3rem 0.9rem 0.3rem;
+  }
+  .achievement-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 1.3rem;
+  }
+  .achievement-card.current .achievement-badge {
+    width: 48px;
+    height: 48px;
+    font-size: 1.7rem;
+  }
+  .progress-bar-bg, .achievement-card .progress-bar-bg {
+    width: 99%;
+    height: 10px;
+    font-size: 0.8rem;
+  }
+  .progress-bar-fill, .achievement-card .progress-bar-fill {
+    height: 100%;
+  }
+  .records-arrow {
+    width: 28px !important;
+    height: 28px !important;
+    min-width: 28px;
+    min-height: 28px;
+    font-size: 1rem;
+  }
+  .records-arrow svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+  .achievement-title, .achievement-card.current .achievement-title {
+    font-size: 0.98rem;
+  }
+  .achievement-level, .achievement-card.current .achievement-level {
+    font-size: 0.85rem;
+  }
+  .achievement-card p, .achievement-card.current p {
+    font-size: 0.85rem;
+  }
+  .next-label {
+    font-size: 0.85rem;
+  }
+}
+
 
