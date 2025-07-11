@@ -4,31 +4,13 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.use(cors());
 app.use(express.json());
-
-// Static files with explicit MIME types
-app.use(express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
-    }
-    if (path.endsWith('.js')) {
-      res.setHeader('Content-Type', 'application/javascript');
-    }
-  }
-}));
-
-// Debug middleware to log static file requests
-app.use((req, res, next) => {
-  if (req.url.includes('.css') || req.url.includes('.js') || req.url.includes('.ico')) {
-    console.log(`Static file request: ${req.method} ${req.url}`);
-  }
-  next();
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 // In-memory storage (for demo purposes)
 const donors = [];
@@ -170,56 +152,11 @@ app.post('/api/edit-profile', async (req, res) => {
   res.json({ success: true, message: 'Profile updated successfully.' });
 });
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
-});
-
-// Explicit CSS route as fallback
-app.get('/styles.css', (req, res) => {
-  res.setHeader('Content-Type', 'text/css');
-  res.sendFile(path.join(__dirname, 'public', 'styles.css'));
-});
-
-// Explicit JS route as fallback
-app.get('/javascript.js', (req, res) => {
-  res.setHeader('Content-Type', 'application/javascript');
-  res.sendFile(path.join(__dirname, 'public', 'javascript.js'));
-});
-
-// Global error handler (must be after routes)
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error' });
-});
-
 // Fallback: serve index.html for any unknown route (SPA support)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-const server = app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-}).on('error', (err) => {
-  console.error('Server failed to start:', err);
-  process.exit(1);
-});
-
-// Fix for Render timeout issues
-server.keepAliveTimeout = 120000; // 120 seconds
-server.headersTimeout = 120000; // 120 seconds
-
-// Graceful shutdown handling
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
-    console.log('Process terminated');
-  });
-});
-
-process.on('SIGINT', () => {
-  console.log('SIGINT received. Shutting down gracefully...');
-  server.close(() => {
-    console.log('Process terminated');
-  });
 });

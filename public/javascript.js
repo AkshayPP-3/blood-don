@@ -792,6 +792,10 @@ function showEditProfileFromProfile() {
   showEditProfile(name, email);
 }
 
+function goBackToProfile() {
+  navigate('profile');
+}
+
 function handleEditProfile(event) {
   event.preventDefault();
   const name = document.getElementById('editName').value.trim();
