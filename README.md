@@ -1,4 +1,4 @@
-# 🩸 Community Blood Donation Web App
+# 🩸 Community Blood Donation Website
 
 ## 🌐 Preview
 

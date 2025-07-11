@@ -121,6 +121,8 @@ function handleLogin(event) {
     .then(data => {
       if (data.success) {
         message.textContent = `Welcome, ${data.name}!`;
+        // Store the user's email in localStorage for profile editing
+        localStorage.setItem('userEmail', email);
         // Show profile section and load profile info
         showProfile(email);
         navigate('profile');
@@ -780,7 +782,6 @@ window.onload = () => {
 function showEditProfile(currentName, currentEmail) {
   document.getElementById('editName').value = currentName;
   document.getElementById('editEmail').value = currentEmail;
-  document.getElementById('editPassword').value = '';
   navigate('edit-profile');
 }
 
@@ -795,17 +796,31 @@ function handleEditProfile(event) {
   event.preventDefault();
   const name = document.getElementById('editName').value.trim();
   const email = document.getElementById('editEmail').value.trim();
-  const password = document.getElementById('editPassword').value.trim();
+  const emergencyName = document.getElementById('emergencyName').value.trim();
+  const emergencyPhone = document.getElementById('emergencyPhone').value.trim();
+  const emergencyRelation = document.getElementById('emergencyRelation').value;
+  
   const message = document.getElementById('editProfileMessage');
   const currentEmail = localStorage.getItem('userEmail');
+  
   if (!name || !email) {
     message.textContent = 'Name and email are required.';
     return false;
   }
+  
   fetch('/api/edit-profile', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ currentEmail, name, email, password })
+    body: JSON.stringify({ 
+      currentEmail, 
+      name, 
+      email,
+      emergencyContact: {
+        name: emergencyName,
+        phone: emergencyPhone,
+        relation: emergencyRelation
+      }
+    })
   })
     .then(res => res.json())
     .then(data => {
@@ -1009,15 +1024,18 @@ typeof window !== 'undefined' && (function() {
     const nextIdx = currentLevelIndex + 1;
     if (prevIdx >= 0) {
       const prev = levels[prevIdx];
-      const isUnlocked = donatedLitres >= prev.threshold;
       let prevProgress = 100;
       let prevProgressText = '';
+      let isProgressionFull = true;
+      
       if (prevIdx < levels.length - 1) {
         const nextLevel = levels[prevIdx + 1];
-        // Per-level progress: how much donated in this level span
-        const donatedInLevel = Math.max(0, Math.min(donatedLitres - prev.threshold, nextLevel.threshold - prev.threshold));
-        prevProgress = Math.round((donatedInLevel / (nextLevel.threshold - prev.threshold)) * 100);
-        prevProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${prevProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedInLevel.toFixed(1)} / ${(nextLevel.threshold - prev.threshold)} L</div></div>`;
+        // Progress: how much donated vs next level threshold
+        prevProgress = Math.round((donatedLitres / nextLevel.threshold) * 100);
+        prevProgress = Math.min(prevProgress, 100);
+        prevProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${prevProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedLitres.toFixed(1)} / ${nextLevel.threshold} L</div></div>`;
+        // Check if progression is full (user has reached the next level)
+        isProgressionFull = prevProgress === 100;
       }
       cardsHtml += `
         <div class="achievement-card ${getLevelClass(prevIdx)}">
@@ -1025,7 +1043,7 @@ typeof window !== 'undefined' && (function() {
           <h3 class="achievement-title">${prev.name} Level</h3>
           <div class="achievement-level">at ${prev.threshold}L</div>
           ${prevProgressText || `<div class='progress-bar-bg'><div class='progress-bar-fill' style='width: 100%;'></div></div>`}
-          ${isUnlocked
+          ${isProgressionFull
             ? `<div class='unlocked-text'><span title='Unlocked'>✔️</span>Unlocked</div>`
             : `<div class='locked-badge' title='Locked'>🔒</div><div class='locked-text'><span>Locked</span></div>`}
         </div>
@@ -1038,10 +1056,10 @@ typeof window !== 'undefined' && (function() {
     let progressText = '';
     if (level.next) {
       const nextLevel = levels[currentLevelIndex + 1];
-      // Per-level progress: how much donated in this level span
-      const donatedInLevel = Math.max(0, Math.min(donatedLitres - level.threshold, nextLevel.threshold - level.threshold));
-      progress = Math.round((donatedInLevel / (nextLevel.threshold - level.threshold)) * 100);
-      progressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${progress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:1.05rem;color:#222;font-weight:700;'>${donatedInLevel.toFixed(1)} / ${(nextLevel.threshold - level.threshold)} L</div></div>`;
+      // Progress towards next level: current amount vs next threshold
+      progress = Math.round((donatedLitres / nextLevel.threshold) * 100);
+      progress = Math.min(progress, 100); // Cap at 100%
+      progressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${progress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:1.05rem;color:#222;font-weight:700;'>${donatedLitres.toFixed(1)} / ${nextLevel.threshold} L</div></div>`;
       nextLabel = `Next: ${level.next} at ${level.nextAt}L`;
     } else {
       progressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: 100%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:1.05rem;color:#222;font-weight:700;'>${donatedLitres.toFixed(1)} L</div></div>`;
@@ -1064,14 +1082,15 @@ typeof window !== 'undefined' && (function() {
       let nextProgressText = '';
       if (nextIdx < levels.length - 1) {
         const afterNext = levels[nextIdx + 1];
-        // Per-level progress: how much donated in this level span
-        const donatedInLevel = Math.max(0, Math.min(donatedLitres - next.threshold, afterNext.threshold - next.threshold));
-        nextProgress = Math.round((donatedInLevel / (afterNext.threshold - next.threshold)) * 100);
-        nextProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${nextProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedInLevel.toFixed(1)} / ${(afterNext.threshold - next.threshold)} L</div></div>`;
+        // Progress towards the level after next - but show progress towards current next level
+        nextProgress = Math.round((donatedLitres / next.threshold) * 100);
+        nextProgress = Math.min(nextProgress, 100);
+        nextProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${nextProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedLitres.toFixed(1)} / ${next.threshold} L</div></div>`;
       } else {
-        // Last level: just show total
-        nextProgress = donatedLitres >= next.threshold ? 100 : 0;
-        nextProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${nextProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedLitres.toFixed(1)} L</div></div>`;
+        // Last level: show progress towards this level
+        nextProgress = Math.round((donatedLitres / next.threshold) * 100);
+        nextProgress = Math.min(nextProgress, 100);
+        nextProgressText = `<div class='progress-bar-bg' style='margin-top:6px;'><div class='progress-bar-fill' style='width: ${nextProgress}%;'></div><div style='position:absolute;width:100%;top:0;left:0;text-align:center;font-size:0.95rem;color:#222;font-weight:600;'>${donatedLitres.toFixed(1)} / ${next.threshold} L</div></div>`;
       }
       cardsHtml += `
         <div class="achievement-card ${getLevelClass(nextIdx)}">

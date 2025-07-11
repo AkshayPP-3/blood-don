@@ -296,31 +296,26 @@
         <input type="text" id="editName" name="editName" required />
         <label for="editEmail">Email</label>
         <input type="email" id="editEmail" name="editEmail" required />
-        <label for="editPassword">New Password (leave blank to keep current)</label>
-        <input type="password" id="editPassword" name="editPassword" minlength="6" />
+        
+        <h3 style="margin-top: 20px; color: #dc3545;">Emergency Contact Information</h3>
+        <label for="emergencyName">Emergency Contact Name</label>
+        <input type="text" id="emergencyName" name="emergencyName" placeholder="Full name of emergency contact" />
+        <label for="emergencyPhone">Emergency Contact Phone</label>
+        <input type="tel" id="emergencyPhone" name="emergencyPhone" pattern="[0-9]{10}" placeholder="Phone number" />
+        <label for="emergencyRelation">Relationship</label>
+        <select id="emergencyRelation" name="emergencyRelation">
+          <option value="">Select Relationship</option>
+          <option value="Parent">Parent</option>
+          <option value="Sibling">Sibling</option>
+          <option value="Child">Child</option>
+          <option value="Friend">Friend</option>
+          <option value="Other">Other</option>
+        </select>
+        
         <button type="submit">Save Changes</button>
       </form>
       <div id="editProfileMessage" role="alert"></div>
     </section>
-
-    <!-- Remove Admin Login section -->
-    <!-- <section id="admin-login" class="card hidden" aria-label="Admin Login">
-      <h2>Admin Login</h2>
-      <form id="adminLoginForm" onsubmit="return handleAdminLogin(event)">
-        <label for="adminEmail">Email</label>
-        <input type="email" id="adminEmail" name="adminEmail" required />
-        <label for="adminPassword">Password</label>
-        <input type="password" id="adminPassword" name="adminPassword" required />
-        <button type="submit">Login as Admin</button>
-      </form>
-      <div id="adminLoginMessage" role="alert"></div>
-    </section> -->
-    <!-- Remove Admin Panel section -->
-    <!-- <section id="admin-panel" class="card hidden" aria-label="Admin Panel">
-      <h2>Admin Panel</h2>
-      <div id="adminPanelContent"></div>
-      <button onclick="logoutAdmin()">Logout</button>
-    </section> -->
   </div>
 
   <footer>

@@ -136,7 +136,7 @@ app.get('/api/profile', (req, res) => {
 
 // Edit profile endpoint
 app.post('/api/edit-profile', async (req, res) => {
-  const { currentEmail, name, email, password } = req.body;
+  const { currentEmail, name, email, emergencyContact } = req.body;
   const user = users.find(u => u.email === currentEmail);
   if (!user) {
     return res.status(404).json({ success: false, message: 'User not found.' });
@@ -147,9 +147,8 @@ app.post('/api/edit-profile', async (req, res) => {
   }
   user.name = name;
   user.email = email;
-  if (password) {
-    user.password = await bcrypt.hash(password, 10);
-  }
+  user.emergencyContact = emergencyContact;
+  
   res.json({ success: true, message: 'Profile updated successfully.' });
 });
 
