@@ -9,12 +9,25 @@ const PORT = process.env.PORT || 10000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error('Unhandled error:', err);
-  res.status(500).json({ error: 'Internal server error' });
+// Static files with explicit MIME types
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    }
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  }
+}));
+
+// Debug middleware to log static file requests
+app.use((req, res, next) => {
+  if (req.url.includes('.css') || req.url.includes('.js') || req.url.includes('.ico')) {
+    console.log(`Static file request: ${req.method} ${req.url}`);
+  }
+  next();
 });
 
 // In-memory storage (for demo purposes)
@@ -160,6 +173,24 @@ app.post('/api/edit-profile', async (req, res) => {
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Explicit CSS route as fallback
+app.get('/styles.css', (req, res) => {
+  res.setHeader('Content-Type', 'text/css');
+  res.sendFile(path.join(__dirname, 'public', 'styles.css'));
+});
+
+// Explicit JS route as fallback
+app.get('/javascript.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.sendFile(path.join(__dirname, 'public', 'javascript.js'));
+});
+
+// Global error handler (must be after routes)
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).json({ error: 'Internal server error' });
 });
 
 // Fallback: serve index.html for any unknown route (SPA support)
